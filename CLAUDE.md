@@ -36,7 +36,7 @@ CLAUDE.md              this file             CLAUDE.md.example    for consumer p
 packs.md               which repo gets which skills, commands and agents (ADR-0002)
 docs/adr/              decisions about this repo (0000-template.md is the template, not an ADR)
 .claude/commands/      /adr, /issues-from-adr, /retro
-.claude/skills/        adr-writing, skill-writing
+.claude/skills/        adr-writing, automation-design, skill-creator (vendored)
 .claude/hooks/         verify-before-commit.sh (inert here — no test gate to run)
 .claude/settings.json  wires the hook up; live in this repo, and a sample for consumers
 .claude/agents/        skeptic (read-only reviewer)
@@ -63,6 +63,22 @@ Records are living documents: edit in place when understanding improves and add 
 A new record is only for when the *problem* changed. See `.claude/skills/adr-writing/SKILL.md` —
 which is also the guidance being published, so changing how ADRs work here changes what readers
 are told to do.
+
+### Skills
+
+Pack: `meta` (see `packs.md`). Blessed here:
+
+| Skill | Why |
+|---|---|
+| `adr-writing` | This repo records its own decisions as ADRs |
+| `automation-design` | Choosing command / skill / hook / agent — the shape question |
+| `skill-creator` | Authoring, evals and description tuning. **Vendored, Apache-2.0 — do not edit.** Update by re-copying from `~/.agents/skills/skill-creator` |
+
+Deliberately absent: everything else in `~/.agents/skills/`. This repo is documentation, so the
+Cloudflare, Mantine and marketing sets have no purchase here.
+
+`skill-creator` answers *how to write it*; `automation-design` answers *what shape it should be*.
+If they ever overlap again, narrow `automation-design` — the vendored one is upstream and wins.
 
 ### Prose
 

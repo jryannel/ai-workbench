@@ -390,6 +390,7 @@ That is the whole boat test, operationalised.
 ├── CLAUDE.md                          ← conventions for working on this repo
 ├── friction-log.md                    ← manual discovery template (see /retro first)
 ├── CLAUDE.md.example                  ← project memory starting point
+├── LICENSE                            ← MIT (vendored parts keep their own)
 ├── packs.md                           ← registry: which repo gets which automation
 ├── docs/
 │   └── adr/
@@ -405,7 +406,8 @@ That is the whole boat test, operationalised.
     │   └── retro.md                   ← /retro — mine transcripts for what to build or delete
     ├── skills/
     │   ├── adr-writing/SKILL.md       ← what a good ADR looks like
-    │   └── skill-writing/SKILL.md     ← how to write the things in this directory
+    │   ├── automation-design/SKILL.md ← command, skill, hook or agent — and where it lives
+    │   └── skill-creator/             ← vendored, Apache-2.0 (authoring + evals)
     ├── hooks/
     │   └── verify-before-commit.sh    ← no commit while the gate is red
     └── agents/
