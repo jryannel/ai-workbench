@@ -29,6 +29,26 @@ letting someone discover it.** But a price is not a veto — if there's a good r
 willingness to pay, that's the system working. The record exists to make the cost visible so the
 trade is deliberate, not to make the answer permanent.
 
+## When to write one — and when not to
+
+Write an ADR when a choice is **hard to reverse**, has **real trade-offs**, or will otherwise be
+re-litigated every few months by someone who doesn't know why it went this way. Signals: you
+argued about it, you turned down a reasonable alternative, or the answer will surprise someone.
+
+Don't write one for a choice with an obvious default, or for something the code already states
+plainly — that belongs in a comment. Two further tests, and either one means stop:
+
+- **No cost you can name** → this isn't a decision, it's a note.
+- **No alternative that was genuinely live** → also not a decision. Say so rather than
+  manufacturing a rejected option to fill the section.
+
+**Prefer revising an existing record to adding one.** A directory that grows a record per
+conversation stops being readable, and unreadable is a worse failure than missing.
+
+**Write them early**, while the reasoning is fresh and before the decision starts to feel
+inevitable. A record written after the fact justifies rather than explains — a difference obvious
+to every reader except its author.
+
 ## Structure
 
 Always follow `docs/adr/0000-template.md`. Never improvise a different structure — the

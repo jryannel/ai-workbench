@@ -349,6 +349,7 @@ That is the whole boat test, operationalised.
 ├── CLAUDE.md.example                  ← project memory starting point
 ├── docs/
 │   └── adr/
+│       ├── README.md                  ← when to write one, status vocabulary, index
 │       ├── 0000-template.md           ← ADR template
 │       └── 0001-…-living-documents.md ← why this template departs from Nygard
 └── .claude/
