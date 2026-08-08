@@ -1,0 +1,84 @@
+# CLAUDE.md — <Project Name>
+
+<!--
+This is the highest-payoff, lowest-effort piece of the whole playbook: it stops you
+re-supplying the same context every session. Copy to your project root as CLAUDE.md and edit.
+
+Keep it short. This file is loaded into every session, so bloat has a real cost.
+Point at documents rather than duplicating them.
+-->
+
+## What this project is
+
+One or two sentences. What it does, who for, and the twist that makes it different from the
+obvious baseline product.
+
+**Baseline products:** <the existing products this is measured against>
+**The twist:** <the differentiator — the thing that must survive every decision>
+
+## Current stage
+
+<concept | requirements | architecture | foundation | feature work | validation>
+
+## Artifact chain
+
+| Artifact | Location | Status |
+|---|---|---|
+| Concept | `docs/concept.md` | |
+| Requirements | `docs/requirements.md` | |
+| Architecture | `docs/architecture.md` | |
+| Decisions | `docs/adr/` | |
+| Work tracking | GitHub issues | |
+
+**Always read the relevant ADRs before proposing anything architectural.** They record *why*,
+which is the context most often missing.
+
+## Conventions
+
+### ADRs
+- Location: `docs/adr/NNNN-kebab-case-title.md`, zero-padded to 4 digits
+- Template: `docs/adr/0000-template.md`
+- Never edit an accepted ADR to change a decision — supersede it with a new one and link both ways
+- Every ADR links to the issue that prompted it
+
+### Issues
+- Labels: `type:*` (feature, bug, chore, spike), `area:*`, `blocked`
+- An issue implementing a decision links to its ADR in the body
+- Definition of done lives in the issue, not in someone's head
+
+### Commits & PRs
+- Conventional commits: `feat(scope): …`, `fix(scope): …`, `docs(scope): …`
+- PR body links the issue and any ADR it implements
+
+## Stack and constraints
+
+- Language / runtime:
+- Framework:
+- Data:
+- Deployment:
+- Hard constraints (budget, compliance, latency, team size):
+
+## Settled decisions
+
+Things already decided — do not re-litigate these without an explicit request. Link the ADR.
+
+- <decision> — ADR-000N
+- <decision> — ADR-000N
+
+## Working agreements for Claude
+
+- **Read state from the repo.** ADRs and open issues are the source of truth, not this conversation.
+- **Write artifacts back to the repo.** Don't leave conclusions only in chat.
+- **Surface guesses.** When producing any artifact, end it with an
+  `## Open questions I had to answer myself` section listing every assumption made because the
+  upstream artifact was underspecified. This is how upstream problems get caught early.
+- **Don't invent requirements.** If something is missing, say so rather than filling the gap.
+- **Ask before scope expansion.** Doing more than asked is a cost, not a bonus.
+- **Hard gates:** do not proceed past requirements or architecture without explicit human approval.
+
+## Commands available
+
+| Command | What it does |
+|---|---|
+| `/adr` | Create a numbered ADR from the template |
+| `/issues-from-adr` | Propose GitHub issues implementing a decision |
