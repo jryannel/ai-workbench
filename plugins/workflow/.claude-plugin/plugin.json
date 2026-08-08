@@ -1,0 +1,12 @@
+{
+  "name": "workflow",
+  "version": "0.1.0",
+  "description": "Worktree-based git flow and session continuity: /git-worktree, /git-status, /git-sync, /git-checkpoint, /git-ship, /git-undo, /handoff, /pickup",
+  "author": {
+    "name": "Jürgen Ryannel",
+    "email": "juergen@ryannel.org"
+  },
+  "homepage": "https://github.com/jryannel/ai-workbench",
+  "license": "MIT",
+  "keywords": ["git", "worktree", "handoff", "session-continuity"]
+}

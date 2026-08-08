@@ -10,6 +10,12 @@
       "source": "./plugins/workbench",
       "description": "Decision records, retros and the shape question: /adr, /issues-from-adr, /retro, an ADR-writing skill, an automation-design skill, a read-only skeptic reviewer, and a verify-before-commit gate",
       "version": "0.1.0"
+    },
+    {
+      "name": "workflow",
+      "source": "./plugins/workflow",
+      "description": "Worktree-based git flow and session continuity: /git-worktree, /git-status, /git-sync, /git-checkpoint, /git-ship, /git-undo, /handoff, /pickup",
+      "version": "0.1.0"
     }
   ]
 }

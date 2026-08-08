@@ -91,18 +91,21 @@ The test is not "is it dangerous" but **"would I be surprised to find it had hap
 
 | What | Why global |
 |---|---|
+| `workflow@ai-workbench` (plugin) | `git-*` is workflow, not domain — every repo is a git repo. `handoff` / `pickup` are session continuity, equally repo-independent. |
 | `find-skills` (skill) | Answers "is there a skill for this?" in any repo. Bootstraps this file. |
-| `git-*` (commands) | Workflow, not domain — every repo is a git repo |
-| `handoff`, `pickup` (commands) | Session continuity is repo-independent |
-| `plan-fable` (command) | Delegation pattern, repo-independent |
 
 No global agents. A reviewer's brief depends on what it's reviewing.
 
-> **These nine are loose files in `~/.claude/commands/`, and shouldn't be.** They pass the global
-> test on *scope*, but they're still hand-maintained on one machine — invisible to a teammate, a
-> cloud agent or CI, which is the same objection this file raises against everything else. Packaging
-> them as a `workflow` plugin installed at user scope keeps the scope and fixes the portability.
-> Not done yet; it's the obvious next move after ADR-0002's revision.
+These were nine loose files in `~/.claude/commands/`. They passed the global test on *scope*, but
+were hand-maintained on one machine — invisible to a teammate, a cloud agent or CI, the same
+objection this file raises against everything else. Packaging them keeps the scope and fixes the
+portability.
+
+> **`workflow@ai-workbench` and `git@devproc` must not both be enabled.** They are two complete and
+> contradictory git flows. `workflow` is worktree-based — `/git-worktree` says in as many words that
+> it replaces the feature-branch flow — and lands work via a self-merging PR. `devproc`'s `git` is
+> feature-branch with staging and production promotion. Nothing collides on *name*, which is worse
+> than if it did: both sets load, and the model picks. Choose one per repo.
 
 ---
 

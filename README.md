@@ -415,23 +415,39 @@ That is the whole boat test, operationalised.
 ├── .claude-plugin/
 │   └── marketplace.json               ← makes this repo an installable marketplace
 ├── plugins/
-│   └── workbench/                     ← the plugin: ~544 always-on tokens
+│   ├── workbench/                     ← project-scope plugin: ~544 always-on tokens
+│   │   ├── .claude-plugin/plugin.json
+│   │   ├── commands/
+│   │   │   ├── adr.md                 ← /adr — create a numbered ADR
+│   │   │   ├── issues-from-adr.md     ← /issues-from-adr — fan a decision into work
+│   │   │   └── retro.md               ← /retro — mine transcripts for what to build or delete
+│   │   ├── skills/
+│   │   │   ├── adr-writing/SKILL.md   ← what a good ADR looks like
+│   │   │   └── automation-design/SKILL.md ← command, skill, hook or agent — and where it lives
+│   │   ├── hooks/
+│   │   │   ├── hooks.json             ← wires the gate up
+│   │   │   └── verify-before-commit.sh ← no commit while the gate is red
+│   │   └── agents/
+│   │       └── skeptic.md             ← read-only reviewer subagent
+│   └── workflow/                      ← user-scope plugin: worktree git flow + continuity
 │       ├── .claude-plugin/plugin.json
-│       ├── commands/
-│       │   ├── adr.md                 ← /adr — create a numbered ADR
-│       │   ├── issues-from-adr.md     ← /issues-from-adr — fan a decision into work
-│       │   └── retro.md               ← /retro — mine transcripts for what to build or delete
-│       ├── skills/
-│       │   ├── adr-writing/SKILL.md   ← what a good ADR looks like
-│       │   └── automation-design/SKILL.md ← command, skill, hook or agent — and where it lives
-│       ├── hooks/
-│       │   ├── hooks.json             ← wires the gate up
-│       │   └── verify-before-commit.sh ← no commit while the gate is red
-│       └── agents/
-│           └── skeptic.md             ← read-only reviewer subagent
+│       └── commands/
+│           ├── git-worktree.md        ← /git-worktree — fresh worktree off latest main
+│           ├── git-status.md          ← /git-status — worktree-aware status
+│           ├── git-sync.md            ← /git-sync — fast-forward main, report drift
+│           ├── git-checkpoint.md      ← /git-checkpoint — WIP commit
+│           ├── git-ship.md            ← /git-ship — self-merging PR, no CI wait
+│           ├── git-undo.md            ← /git-undo — safe undo, several options
+│           ├── handoff.md             ← /handoff — write a resumable state doc
+│           └── pickup.md              ← /pickup — resume from the latest handoff
 └── .claude/
     └── settings.json                  ← this repo installing its own plugin
 ```
+
+The two plugins differ in scope on purpose: `workbench` is domain-shaped (a repo that records
+decisions) and installs at `--scope project`; `workflow` is pure git and session mechanics, passes
+the global test honestly, and installs at `--scope user`. That split is the whole of
+[`packs.md`](packs.md) in one directory.
 
 **How to use it — install it:**
 

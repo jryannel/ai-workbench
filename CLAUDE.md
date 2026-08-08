@@ -35,17 +35,19 @@ README.md                       the playbook     friction-log.md    discovery te
 CLAUDE.md                       this file        CLAUDE.md.example  for consumer projects
 packs.md                        which repo gets which automation (ADR-0002)
 docs/adr/                       decisions about this repo (0000-template.md is the template)
-.claude-plugin/marketplace.json this repo as an installable marketplace
-plugins/workbench/              the published plugin — everything below is its payload
+.claude-plugin/marketplace.json this repo as an installable marketplace (two plugins)
+plugins/workbench/              project-scope plugin — the playbook's samples
   commands/                     /adr, /issues-from-adr, /retro
   skills/                       adr-writing, automation-design
   agents/                       skeptic (read-only reviewer)
   hooks/                        verify-before-commit.sh (inert here — no test gate to run)
-.claude/settings.json           this repo installing its own plugin at project scope
+plugins/workflow/               user-scope plugin — worktree git flow, handoff/pickup
+  commands/                     git-{worktree,status,sync,checkpoint,ship,undo}, handoff, pickup
+.claude/settings.json           this repo installing workbench at project scope
 ```
 
-**The automation lives in `plugins/workbench/`, not `.claude/`.** This repo is a marketplace, and
-it dogfoods itself: `.claude/settings.json` declares the marketplace as `.` and enables
+**The automation lives in `plugins/`, not `.claude/`.** This repo is a marketplace, and it
+dogfoods itself: `.claude/settings.json` declares the marketplace as `.` and enables
 `workbench@ai-workbench`. Two consequences:
 
 - **Editing a file under `plugins/workbench/` changes the published plugin.** It is picked up from
@@ -64,8 +66,11 @@ Cross-references that break silently if a file moves:
   `plugins/workbench/hooks/`, `docs/adr/0000-template.md`
 - `plugins/workbench/commands/adr.md` hardcodes `docs/adr/0000-template.md` and `NNNN-kebab-case`
 - a skill's directory name must match its frontmatter `name:` (`adr-writing`)
-- `.claude-plugin/marketplace.json` hardcodes `./plugins/workbench`; `plugin.json` version and the
-  marketplace entry's version must agree
+- `.claude-plugin/marketplace.json` hardcodes `./plugins/workbench` and `./plugins/workflow`; each
+  `plugin.json` version and its marketplace entry's version must agree
+- `workflow`'s git commands are opinionated about a **worktree** flow and conflict with
+  `git@devproc`'s feature-branch flow. Don't reconcile them by editing one — they're alternatives.
+  See the note in `packs.md`.
 
 ## Conventions
 
