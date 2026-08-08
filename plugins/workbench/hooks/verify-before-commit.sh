@@ -9,7 +9,9 @@
 # the real gate and it runs on the server. This one exists to catch a broken
 # build before it becomes a commit.
 #
-# Wire it up in .claude/settings.json:
+# Shipped by the `workbench` plugin and wired up in its hooks/hooks.json, so a
+# repo that enables the plugin gets this gate without copying anything. To run
+# it standalone instead, drop the script in .claude/hooks/ and wire it directly:
 #   "PreToolUse": [{ "matcher": "Bash", "hooks": [{ "type": "command",
 #     "if": "Bash(git commit *)",
 #     "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/verify-before-commit.sh" }]}]

@@ -1,0 +1,15 @@
+{
+  "name": "ai-workbench",
+  "owner": {
+    "name": "Jürgen Ryannel",
+    "email": "juergen@ryannel.org"
+  },
+  "plugins": [
+    {
+      "name": "workbench",
+      "source": "./plugins/workbench",
+      "description": "Decision records, retros and the shape question: /adr, /issues-from-adr, /retro, an ADR-writing skill, an automation-design skill, a read-only skeptic reviewer, and a verify-before-commit gate",
+      "version": "0.1.0"
+    }
+  ]
+}

@@ -87,18 +87,24 @@ that's a cue to reopen it rather than work around it quietly. Link the ADR.
 This repo's pack: `<meta | go-service | cloudflare-worker | web-ui | marketing-site>`
 (see the registry in ai-workbench `packs.md`).
 
-Blessed — vendored in `.claude/skills/`, one line each on why:
+Blessed — one line each on why:
 
-| Skill | Why it's here |
-|---|---|
-| `<name>` | `<the job it does in this repo>` |
+| Skill / plugin | Where from | Why it's here |
+|---|---|---|
+| `<name>` | `<plugin@marketplace, or vendored>` | `<the job it does in this repo>` |
 
 Deliberately absent — so nobody re-adds them:
 
 - `<name>` — `<why this repo doesn't need it>`
 
-Skills are installed per repo, not globally. A global copy of the same name silently overrides the
-one here, so if a vendored skill isn't behaving, check `~/.claude/skills/` first.
+Automation is installed per repo, not globally. Prefer a plugin —
+`claude plugin install <name>@<marketplace> --scope project` records it in `.claude/settings.json`,
+so a clone, CI or a cloud agent gets the same toolset. `claude plugin details <name>` shows what it
+costs in every session.
+
+Vendoring into `.claude/skills/` is the fallback where no plugin exists. It has one trap: a global
+copy of the same name silently overrides the repo one, so if a vendored skill isn't behaving, check
+`~/.claude/skills/` first. Plugins are namespaced and don't have this problem.
 
 Anything that writes, pushes, deletes or spends carries `disable-model-invocation: true` and is
 invoked by hand. The test isn't "is it dangerous" but "would I be surprised to find it had

@@ -3,12 +3,14 @@
 The central answer to "what does *this* repo need?" A repo's **intent** decides its pack; the pack
 decides its skills, commands and agents.
 
-A **pack** is the set of automation blessed for one kind of repo. The term is borrowed from
-[skills.sh](https://www.skills.sh/packs), which uses it for a bundle installed by one command —
-the same grouping instinct. This registry uses the word, not the service: their packs address
-*fetching*, and nothing documented suggests one installs anywhere other than globally, which
-leaves the problem this file exists for untouched. Sharing vocabulary means a hosted bundle could
-be adopted later without renaming anything.
+A **pack** is the set of automation blessed for one kind of repo. **Where one exists as a plugin,
+the pack _is_ the plugin** — Claude Code's plugin system implements this natively, and hand-rolling
+it was a mistake this file made for one day. A plugin bundles commands, skills, agents, hooks and
+MCP servers under one name, installs per project, is namespaced, and updates from a single source.
+
+The word was originally borrowed from [skills.sh](https://www.skills.sh/packs). Keep it: it still
+names the grouping for third-party skills that *aren't* published as plugins, which is the only
+place manual vendoring survives.
 
 > **Why this file exists:** anything installed globally is loaded into every session in every repo,
 > and its description occupies context permanently whether or not it's relevant. Fifty global
@@ -23,8 +25,9 @@ automation belongs to a pack.
 
 | Scope | Lives in | For |
 |---|---|---|
-| **Global** | `~/.claude/{skills,commands,agents}/` | Useful in every repo, whatever it holds |
-| **Pack** | `<repo>/.claude/…`, committed | Everything domain-shaped |
+| **Global** | `~/.claude/…`, or a plugin at user scope | Useful in every repo, whatever it holds |
+| **Pack** | a plugin enabled at `--scope project`, committed | Everything domain-shaped |
+| **Vendored** | `<repo>/.claude/…`, committed | Domain-shaped, but no plugin exists for it |
 | **Never** | — | Installed "just in case" |
 
 The rule cuts differently by artifact type, and that's correct rather than inconsistent:
@@ -35,17 +38,30 @@ The rule cuts differently by artifact type, and that's correct rather than incon
 - **Agents** are nearly always repo-shaped, since a reviewer's brief depends on what's being
   reviewed. Keep them in the repo.
 
-### The trap that makes this mandatory
+### The trap — and why plugins avoid it
 
-**Personal overrides project.** Anything in `~/.claude/` silently wins over the same name in a
-repo's `.claude/`. So per-repo versions do not take effect until the global copy is removed.
-Pruning globals isn't tidying — it's what makes packs work at all.
+**Personal overrides project.** A skill in `~/.claude/skills/` silently wins over the same name in
+a repo's `.claude/skills/`, so a vendored copy is inert until the global one is removed. Pruning
+globals is what makes *vendoring* work at all.
+
+**Plugins don't have this problem.** They're namespaced — `workbench@ai-workbench`,
+`review@devproc` — so two copies coexist visibly instead of one silently shadowing the other. That
+removes the single sharpest edge in this file, and it's most of why plugins win.
+
+The residual risk is duplication rather than shadowing: enable a marketplace plugin *and* vendor
+the same skill, and you pay context for both. `claude plugin details <plugin>` prices it.
 
 ### Why committed, not symlinked
 
-A symlink into `~/.agents/` works only on your machine. A committed copy travels: a teammate
+A symlink into `~/.agents/` works only on your machine. Committed config travels: a teammate
 cloning, a cloud agent, CI, a fresh laptop. Same reasoning as committing handoff docs — state
 lives in the repo, not in one machine's home directory.
+
+This applies to the *declaration*, not the payload. A plugin enabled at `--scope project` writes
+`enabledPlugins` into `.claude/settings.json`, which is committed and travels; the plugin body
+stays in the marketplace cache. One caveat, learned the hard way: `claude plugin marketplace add`
+records an **absolute path** for a directory source. Committing that breaks every other machine —
+rewrite it to a relative path, or use the `owner/repo` form.
 
 ---
 
@@ -82,6 +98,12 @@ The test is not "is it dangerous" but **"would I be surprised to find it had hap
 
 No global agents. A reviewer's brief depends on what it's reviewing.
 
+> **These nine are loose files in `~/.claude/commands/`, and shouldn't be.** They pass the global
+> test on *scope*, but they're still hand-maintained on one machine — invisible to a teammate, a
+> cloud agent or CI, which is the same objection this file raises against everything else. Packaging
+> them as a `workflow` plugin installed at user scope keeps the scope and fixes the portability.
+> Not done yet; it's the obvious next move after ADR-0002's revision.
+
 ---
 
 ## Packs
@@ -91,23 +113,24 @@ Pick the one matching what the repo *is*. A repo may take more than one.
 ### `meta` — repos that author agent tooling
 *ai-workbench, plugin repos, anything with a `.claude/` you maintain rather than merely use.*
 
-| Skill | Source |
+All three are plugins. Nothing in this pack needs vendoring.
+
+| Install | Gives you |
 |---|---|
-| `skill-creator` | `anthropics/skills` — authoring, evals, description optimisation (Apache-2.0; keep its LICENSE when vendoring) |
-| `automation-design` | this repo — command / skill / hook / agent, and where each lives |
-| `adr-writing` | this repo — only where decisions are recorded as ADRs |
+| `workbench@ai-workbench` | `/adr`, `/issues-from-adr`, `/retro`, `adr-writing`, `automation-design`, `skeptic`, the commit gate — ~544 always-on tok |
+| `anthropic-skills` marketplace | `skill-creator` — authoring, evals, description optimisation |
+| `plugin-dev@claude-plugins-official` | Plugin structure, hooks, MCP, agent and command authoring — ~2,349 always-on tok |
 
-The two authored here are not fetchable with `npx skills add`; copy them from `ai-workbench`.
-They divide cleanly: `skill-creator` is *how to write it*, `automation-design` is *what shape it
-should be*. If they drift back into overlap, narrow `automation-design` — the vendored one is
-upstream and wins.
+`skill-creator` and `automation-design` divide cleanly: the first is *how to write it*, the second
+is *what shape it should be*. If they drift back into overlap, narrow `automation-design` —
+`skill-creator` is upstream and wins.
 
-Also relevant as a marketplace plugin: `plugin-dev@claude-plugins-official`.
+`plugin-dev` is the expensive one. Worth it while you're building plugins; disable it when you
+aren't, which is what `--scope project` is for.
 
-> **Check for a plugin before vendoring.** `skill-creator` also ships in the `anthropic-skills`
-> marketplace plugin, so a repo with that plugin enabled carries the skill twice — once namespaced,
-> once vendored — paying context for both. Vendoring buys a pinned copy that travels to CI and
-> cloud agents; the plugin buys upstream updates for free. Pick one per repo, deliberately.
+> **Check for a plugin before vendoring.** Vendoring `skill-creator` into a repo that also enables
+> `anthropic-skills` carries it twice, paying context for both. This repo did exactly that for an
+> afternoon before the plugin route was found.
 
 ### `cloudflare-worker` — Workers, Pages, D1/KV/R2
 
@@ -153,36 +176,64 @@ work happens needs none of the skills that were installed globally for its benef
 
 ## Installing into a repo
 
-Downloading and scoping are **two separate steps**. skills.sh documents
-`npx skills add <owner>/<repo>`, which fetches into `~/.agents/skills/` and symlinks it into
-`~/.claude/skills/` — globally, with no documented project-scope flag. So:
+### If it's a plugin — the default
 
 ```bash
-# 1. fetch (once per machine) — skip if already in ~/.agents/skills/
-npx skills add <owner>/<repo>
-
-# 2. scope it to the repo that needs it
-mkdir -p .claude/skills
-cp -R ~/.agents/skills/<name> .claude/skills/<name>
-git add .claude/skills/<name> && git commit -m "chore: vendor <name>"
-
-# 3. stop it loading everywhere — required, or the global copy wins
-rm ~/.claude/skills/<name>
+claude plugin marketplace add <owner>/<repo>          # once per machine
+claude plugin install <name>@<marketplace> --scope project
 ```
 
-Step 3 is not optional: personal overrides project, so the vendored copy is inert until the global
-symlink is gone.
+`--scope project` writes `enabledPlugins` into the repo's `.claude/settings.json`. Commit it, and a
+clone, a cloud agent or CI gets the same toolset with no copying. Check the price before you commit
+to it:
 
-Then record it under **Skills** in that repo's `CLAUDE.md`, with one line on why it's blessed.
-Presence declares *what*; CLAUDE.md declares *why*, and names what's deliberately absent so nobody
-re-adds it.
+```bash
+claude plugin details <name>@<marketplace>
+```
 
-**Updating:** re-run `npx skills add`, then re-copy into each repo that vendors it. That fan-out is
-the real cost — see ADR-0002. If skills.sh gains a project-scope flag, steps 2 and 3 collapse and
-this file should change.
+That reports always-on token cost per component — the number this whole file is an argument about.
+Anything over a few hundred always-on tokens for a plugin you rarely invoke is a deletion
+candidate.
 
-**Removing a global:** `rm ~/.claude/skills/<name>`. These are symlinks; the source stays in
-`~/.agents/skills/` to vendor from.
+**Updating:** `claude plugin update`. One source, no fan-out. This is the difference that made the
+hand-rolled approach not worth keeping.
+
+### If there's no plugin — vendor it
+
+Still the case for most skills.sh content: the Cloudflare, Mantine and marketing sets ship as skill
+repos, not marketplaces.
+
+```bash
+npx skills add <owner>/<repo>                    # fetches to ~/.agents/skills/, symlinks globally
+cp -R ~/.agents/skills/<name> .claude/skills/<name>
+git add .claude/skills/<name> && git commit -m "chore: vendor <name>"
+rm ~/.claude/skills/<name>                       # required — or the global copy wins
+```
+
+That last line is not optional: personal overrides project, so the vendored copy is inert until the
+global symlink is gone. Updating means re-running `npx skills add` and re-copying into every repo
+that vendors it — the fan-out cost that plugins eliminate. If you're doing this for more than two
+repos, package the skills into your own marketplace instead.
+
+### Publishing your own
+
+A repo becomes a marketplace with one manifest at `.claude-plugin/marketplace.json` listing plugins
+by relative path; each plugin needs `.claude-plugin/plugin.json` and any of `commands/`, `skills/`,
+`agents/`, `hooks/hooks.json`, `.mcp.json`. See this repo's own, and `valiro-ai/devproc`. A repo can
+install its own plugin for development:
+
+```bash
+claude plugin marketplace add ./ --scope project
+```
+
+Then fix the absolute path it writes (see above), or your teammates get a marketplace pointing at
+your home directory.
+
+### Either way
+
+Record it under **Skills** in that repo's `CLAUDE.md`, with one line on why it's blessed. Presence
+declares *what*; CLAUDE.md declares *why*, and names what's deliberately absent so nobody re-adds
+it.
 
 ---
 

@@ -226,7 +226,7 @@ different brief, checks work it did not produce. Separate-reviewer is consistent
 highest-value node in every write-up of this pattern; it also teaches you subagent mechanics with
 nothing at risk.
 
-Sample: [`.claude/agents/skeptic.md`](.claude/agents/skeptic.md)
+Sample: [`skeptic.md`](plugins/workbench/agents/skeptic.md)
 
 ### Step 4 — One hook
 
@@ -241,11 +241,12 @@ is also urgent. A `PreToolUse` hook on `git commit` either opens or doesn't. If 
 reaching for absolutes and capital letters to make an instruction stick, that's the signal you
 wanted a hook.
 
-Sample: [`.claude/hooks/verify-before-commit.sh`](.claude/hooks/verify-before-commit.sh) refuses a
+Sample: [`verify-before-commit.sh`](plugins/workbench/hooks/verify-before-commit.sh) refuses a
 commit while the project's fast gate is red, wired up in
-[`.claude/settings.json`](.claude/settings.json). It runs preflight rather than the full suite —
+[`hooks.json`](plugins/workbench/hooks/hooks.json). It runs preflight rather than the full suite —
 CI is the real gate — and ships with two escape hatches, because a gate you can't bypass gets
-switched off entirely.
+switched off entirely. It detects the gate rather than assuming one, and stays silent in a repo
+that has none — which is why it's inert in this one.
 
 ### Step 5 — A graph, maybe
 
@@ -334,6 +335,19 @@ Fake the graph before you build it. All of this is a day, not a sprint.
    the improvement, you don't need a graph — you need a second pass, and you just avoided building
    an org chart to answer an email.
 
+**Two of these steps are now tooling rather than discipline,** if your automation is packaged as a
+plugin:
+
+```bash
+claude plugin details <plugin>   # always-on token cost, per component
+claude plugin eval <plugin>      # gold set + rubric as regression tests
+```
+
+`details` answers "what is this costing me in every session" with a number instead of an argument —
+this repo's own plugin is ~544 always-on tokens, and the descriptions dominate. `eval` runs cases
+from `evals/**/case.yaml` against graders and adds a no-plugin baseline arm, which is step 3 done
+for you. Neither replaces the gold set: you still have to know what good looks like.
+
 ### Validating the full pipeline
 
 Don't run the whole chain against a synthetic gold set. **Use your own shipped projects.** Feed a
@@ -390,37 +404,54 @@ That is the whole boat test, operationalised.
 ├── CLAUDE.md                          ← conventions for working on this repo
 ├── friction-log.md                    ← manual discovery template (see /retro first)
 ├── CLAUDE.md.example                  ← project memory starting point
-├── LICENSE                            ← MIT (vendored parts keep their own)
+├── LICENSE                            ← MIT
 ├── packs.md                           ← registry: which repo gets which automation
 ├── docs/
 │   └── adr/
 │       ├── README.md                  ← when to write one, status vocabulary, index
 │       ├── 0000-template.md           ← ADR template
 │       ├── 0001-…-living-documents.md ← why this template departs from Nygard
-│       └── 0002-…-repo-intent.md      ← why skills are scoped per repo
+│       └── 0002-…-repo-intent.md      ← why automation is scoped per repo
+├── .claude-plugin/
+│   └── marketplace.json               ← makes this repo an installable marketplace
+├── plugins/
+│   └── workbench/                     ← the plugin: ~544 always-on tokens
+│       ├── .claude-plugin/plugin.json
+│       ├── commands/
+│       │   ├── adr.md                 ← /adr — create a numbered ADR
+│       │   ├── issues-from-adr.md     ← /issues-from-adr — fan a decision into work
+│       │   └── retro.md               ← /retro — mine transcripts for what to build or delete
+│       ├── skills/
+│       │   ├── adr-writing/SKILL.md   ← what a good ADR looks like
+│       │   └── automation-design/SKILL.md ← command, skill, hook or agent — and where it lives
+│       ├── hooks/
+│       │   ├── hooks.json             ← wires the gate up
+│       │   └── verify-before-commit.sh ← no commit while the gate is red
+│       └── agents/
+│           └── skeptic.md             ← read-only reviewer subagent
 └── .claude/
-    ├── settings.json                  ← wires the hook up
-    ├── commands/
-    │   ├── adr.md                     ← /adr — create a numbered ADR
-    │   ├── issues-from-adr.md         ← /issues-from-adr — fan a decision into work
-    │   └── retro.md                   ← /retro — mine transcripts for what to build or delete
-    ├── skills/
-    │   ├── adr-writing/SKILL.md       ← what a good ADR looks like
-    │   ├── automation-design/SKILL.md ← command, skill, hook or agent — and where it lives
-    │   └── skill-creator/             ← vendored, Apache-2.0 (authoring + evals)
-    ├── hooks/
-    │   └── verify-before-commit.sh    ← no commit while the gate is red
-    └── agents/
-        └── skeptic.md                 ← read-only reviewer subagent
+    └── settings.json                  ← this repo installing its own plugin
 ```
 
-**How to use it:** copy the pieces you want into your own project. The samples are deliberately
-opinionated so they're worth editing — the point is that they encode *your* conventions, and a
-generic version of them would be worth nothing. (`CLAUDE.md` is the exception: it's this repo's
-own memory, for agents editing the playbook. The one to copy is `CLAUDE.md.example`.)
+**How to use it — install it:**
 
-**Suggested first session:** write `CLAUDE.md`, copy the ADR command + skill, start the friction
-log. Come back in two weeks with data and let the log tell you the second step.
+```bash
+claude plugin marketplace add jryannel/ai-workbench
+claude plugin install workbench@ai-workbench --scope project
+```
+
+That writes `enabledPlugins` into the repo's `.claude/settings.json`, so a teammate, CI or a cloud
+agent cloning it gets the same toolset. `claude plugin details workbench@ai-workbench` reports what
+you're paying for it before you commit to it. Copying the files by hand still works and is the
+right move if you want to edit them — the samples are deliberately opinionated so they're worth
+editing, and a generic version would be worth nothing.
+
+This repo installs its own plugin the same way, which is why `.claude/settings.json` is four lines
+and points at `.`. (`CLAUDE.md` is not part of the plugin: it's this repo's own memory, for agents
+editing the playbook. The one to copy is `CLAUDE.md.example`.)
+
+**Suggested first session:** write `CLAUDE.md`, install the plugin or copy the ADR command + skill,
+start the friction log. Come back in two weeks with data and let the log tell you the second step.
 
 ---
 

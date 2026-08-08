@@ -1,0 +1,12 @@
+{
+  "name": "workbench",
+  "version": "0.1.0",
+  "description": "Decision records, retros and the shape question: /adr, /issues-from-adr, /retro, an ADR-writing skill, an automation-design skill, a read-only skeptic reviewer, and a verify-before-commit gate",
+  "author": {
+    "name": "Jürgen Ryannel",
+    "email": "juergen@ryannel.org"
+  },
+  "homepage": "https://github.com/jryannel/ai-workbench",
+  "license": "MIT",
+  "keywords": ["adr", "decision-records", "retro", "automation-design"]
+}

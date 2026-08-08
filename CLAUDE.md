@@ -31,25 +31,41 @@ this file, it is not synced with this file, and the two should be allowed to div
 ## Layout
 
 ```
-README.md              the playbook          friction-log.md      discovery template
-CLAUDE.md              this file             CLAUDE.md.example    for consumer projects
-packs.md               which repo gets which skills, commands and agents (ADR-0002)
-docs/adr/              decisions about this repo (0000-template.md is the template, not an ADR)
-.claude/commands/      /adr, /issues-from-adr, /retro
-.claude/skills/        adr-writing, automation-design, skill-creator (vendored)
-.claude/hooks/         verify-before-commit.sh (inert here — no test gate to run)
-.claude/settings.json  wires the hook up; live in this repo, and a sample for consumers
-.claude/agents/        skeptic (read-only reviewer)
+README.md                       the playbook     friction-log.md    discovery template
+CLAUDE.md                       this file        CLAUDE.md.example  for consumer projects
+packs.md                        which repo gets which automation (ADR-0002)
+docs/adr/                       decisions about this repo (0000-template.md is the template)
+.claude-plugin/marketplace.json this repo as an installable marketplace
+plugins/workbench/              the published plugin — everything below is its payload
+  commands/                     /adr, /issues-from-adr, /retro
+  skills/                       adr-writing, automation-design
+  agents/                       skeptic (read-only reviewer)
+  hooks/                        verify-before-commit.sh (inert here — no test gate to run)
+.claude/settings.json           this repo installing its own plugin at project scope
 ```
+
+**The automation lives in `plugins/workbench/`, not `.claude/`.** This repo is a marketplace, and
+it dogfoods itself: `.claude/settings.json` declares the marketplace as `.` and enables
+`workbench@ai-workbench`. Two consequences:
+
+- **Editing a file under `plugins/workbench/` changes the published plugin.** It is picked up from
+  the working tree, so a local edit is live in the next session — but it's also what a consumer
+  installs. Treat it as an edit to the README.
+- **`.claude/settings.json` must keep the relative `"path": "."`.** `claude plugin marketplace add`
+  rewrites it to an absolute `/Users/…` path, which would break every other machine. If you re-run
+  that command, fix the path before committing.
 
 **README section 11 is the manifest.** If you add, move or delete a file, update that tree in the
 same commit or the playbook starts lying about itself.
 
 Cross-references that break silently if a file moves:
 
-- `README.md` links `friction-log.md`, `.claude/agents/skeptic.md`, `docs/adr/0000-template.md`
-- `.claude/commands/adr.md` hardcodes `docs/adr/0000-template.md` and the `NNNN-kebab-case` format
+- `README.md` links `friction-log.md`, `plugins/workbench/agents/skeptic.md`,
+  `plugins/workbench/hooks/`, `docs/adr/0000-template.md`
+- `plugins/workbench/commands/adr.md` hardcodes `docs/adr/0000-template.md` and `NNNN-kebab-case`
 - a skill's directory name must match its frontmatter `name:` (`adr-writing`)
+- `.claude-plugin/marketplace.json` hardcodes `./plugins/workbench`; `plugin.json` version and the
+  marketplace entry's version must agree
 
 ## Conventions
 
@@ -60,7 +76,7 @@ it, what gets cut, structural changes. Numbering starts at `0001`; `0000-templat
 template.
 
 Records are living documents: edit in place when understanding improves and add a Revisions line.
-A new record is only for when the *problem* changed. See `.claude/skills/adr-writing/SKILL.md` —
+A new record is only for when the *problem* changed. See `plugins/workbench/skills/adr-writing/SKILL.md` —
 which is also the guidance being published, so changing how ADRs work here changes what readers
 are told to do.
 
@@ -72,13 +88,18 @@ Pack: `meta` (see `packs.md`). Blessed here:
 |---|---|
 | `adr-writing` | This repo records its own decisions as ADRs |
 | `automation-design` | Choosing command / skill / hook / agent — the shape question |
-| `skill-creator` | Authoring, evals and description tuning. **Vendored, Apache-2.0 — do not edit.** Update by re-copying from `~/.agents/skills/skill-creator` |
+
+Both ship *in* `workbench@ai-workbench`, so editing them edits the product.
+
+`skill-creator` is **not vendored** — it was, for one afternoon, and that was a mistake: it's
+available as a plugin from the `anthropic-skills` marketplace, so vendoring paid context twice for
+a pinned copy nobody needed. Install the plugin if you're authoring skills here.
+
+It answers *how to write it*; `automation-design` answers *what shape it should be*. If they ever
+overlap again, narrow `automation-design` — `skill-creator` is upstream and wins.
 
 Deliberately absent: everything else in `~/.agents/skills/`. This repo is documentation, so the
 Cloudflare, Mantine and marketing sets have no purchase here.
-
-`skill-creator` answers *how to write it*; `automation-design` answers *what shape it should be*.
-If they ever overlap again, narrow `automation-design` — the vendored one is upstream and wins.
 
 ### Prose
 
