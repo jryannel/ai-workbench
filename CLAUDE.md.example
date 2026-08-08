@@ -38,8 +38,12 @@ which is the context most often missing.
 ### ADRs
 - Location: `docs/adr/NNNN-kebab-case-title.md`, zero-padded to 4 digits
 - Template: `docs/adr/0000-template.md`
-- Never edit an accepted ADR to change a decision — supersede it with a new one and link both ways
-- Every ADR links to the issue that prompted it
+- **ADRs are living documents.** Edit one in place when understanding improves, and add a
+  Revisions line. Write a new record only when the *problem* changed, not the answer — then link
+  `Replaces` / `Replaced by` in both directions
+- Status is `Exploring | Working | Revisiting | Replaced`. There is no `Accepted` and no `Final`
+- Every ADR links to the issue that prompted it, and carries a **Cost of change**
+- When you touch an area, glance at its ADR: still true → bump `Last reviewed`; not true → fix it
 
 ### Issues
 - Labels: `type:*` (feature, bug, chore, spike), `area:*`, `blocked`
@@ -60,7 +64,9 @@ which is the context most often missing.
 
 ## Settled decisions
 
-Things already decided — do not re-litigate these without an explicit request. Link the ADR.
+Things already decided — do not re-litigate these casually. Each record's *What would change our
+mind* section says what a legitimate reopening looks like; if you've hit one of those conditions,
+that's a cue to reopen it rather than work around it quietly. Link the ADR.
 
 - <decision> — ADR-000N
 - <decision> — ADR-000N

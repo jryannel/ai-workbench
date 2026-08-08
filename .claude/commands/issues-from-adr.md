@@ -1,5 +1,5 @@
 ---
-description: Turn an accepted ADR into a set of proposed GitHub issues
+description: Turn an ADR that is in force into a set of proposed GitHub issues
 argument-hint: <ADR number or path, e.g. 0007>
 allowed-tools: Read, Glob, Bash(gh issue list:*), Bash(gh issue view:*), Bash(gh label list:*)
 ---
@@ -11,8 +11,15 @@ Propose the GitHub issues that implement the decision in ADR $ARGUMENTS.
 1. **Read the ADR.** Resolve `$ARGUMENTS` to a file under `docs/adr/` (accept a bare number, a
    filename, or a path).
 
-2. **Refuse politely if the status is not `Accepted`.** A `Proposed` decision shouldn't spawn
-   work yet — say so and stop.
+2. **Check the status carries enough weight to spawn work.**
+   - `Working` — go ahead.
+   - `Exploring` — say so and stop. The direction isn't trusted yet; building on it is how an
+     unsettled decision becomes settled by accident.
+   - `Revisiting` — stop. Work proposed now may be undone by the revisit.
+   - `Replaced` — stop, and point at the record that replaced it.
+
+   If Confidence is `Low`, say so and ask before proposing anything — low confidence plus new
+   work is the combination most likely to be rewritten.
 
 3. **Check for existing work.** `gh issue list --state all --search "<key terms>"` so you don't
    propose duplicates. Mention any near-matches you find.

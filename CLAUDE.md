@@ -54,7 +54,12 @@ Cross-references that break silently if a file moves:
 
 This repo follows its own process. Use `/adr` for decisions about the workbench — what belongs in
 it, what gets cut, structural changes. Numbering starts at `0001`; `0000-template.md` is the
-template. Supersede, never rewrite.
+template.
+
+Records are living documents: edit in place when understanding improves and add a Revisions line.
+A new record is only for when the *problem* changed. See `.claude/skills/adr-writing/SKILL.md` —
+which is also the guidance being published, so changing how ADRs work here changes what readers
+are told to do.
 
 ### Prose
 

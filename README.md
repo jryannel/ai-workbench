@@ -144,7 +144,7 @@ nothing to adopt today.
 ```
 concept.md ──► requirements.md ──► architecture.md ──► ADRs ──► issues ──► code ──► tests
      ▲                                                   │
-     └────────────── supersedes / revisits ◄─────────────┘
+     └────────────── revisits / replaces ◄──────────────┘
 ```
 
 The ADRs are the connective tissue: they're the only artifact that records *why*, which is the
@@ -174,8 +174,9 @@ Highest frequency, most stable format, and ADRs are what everything downstream n
 
 - `/adr` — create a correctly numbered ADR from your template, linked to the originating issue
 - `/issues-from-adr` — fan a decision out into tracked work
-- an **ADR skill** — encodes what a good ADR looks like *for you*: alternatives genuinely
-  considered, consequences (including bad ones), supersedes/superseded-by links
+- an **ADR skill** — encodes what a good ADR looks like *for you*: the constraint that actually
+  decided it, the costs stated without hedging, what would change your mind, and what reversing
+  it would take
 
 Samples for all three are in this repo.
 
@@ -346,7 +347,10 @@ That is the whole boat test, operationalised.
 ├── CLAUDE.md                          ← conventions for working on this repo
 ├── friction-log.md                    ← two-week discovery template
 ├── CLAUDE.md.example                  ← project memory starting point
-├── docs/adr/0000-template.md          ← ADR template
+├── docs/
+│   └── adr/
+│       ├── 0000-template.md           ← ADR template
+│       └── 0001-…-living-documents.md ← why this template departs from Nygard
 └── .claude/
     ├── commands/
     │   ├── adr.md                     ← /adr — create a numbered ADR
@@ -374,7 +378,9 @@ log. Come back in two weeks with data and let the log tell you the second step.
 - Anthropic — [How we built our multi-agent research system](https://www.anthropic.com/engineering/built-multi-agent-research-system):
   the pattern *and* its cost, honestly reported
 - [Claude Code subagents documentation](https://code.claude.com/docs/en/sub-agents)
-- Michael Nygard — the original ADR format
+- Michael Nygard — the original ADR format. The template here deliberately departs from it:
+  records are living documents rather than immutable ones, and carry a *Cost of change*. The
+  reasoning is in ADR-0001 and in the `adr-writing` skill
 
 *Caveat on the discourse: "graph engineering" trended in mid-2026, but the mechanics — directed
 graphs of states and transitions, orchestration engines, agent-to-agent delegation — are decades
