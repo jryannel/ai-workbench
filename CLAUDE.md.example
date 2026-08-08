@@ -84,7 +84,7 @@ that's a cue to reopen it rather than work around it quietly. Link the ADR.
 
 ## Skills
 
-This repo's profile: `<meta | go-service | cloudflare-worker | web-ui | marketing-site>`
+This repo's pack: `<meta | go-service | cloudflare-worker | web-ui | marketing-site>`
 (see the registry in ai-workbench `skills.md`).
 
 Blessed — vendored in `.claude/skills/`, one line each on why:

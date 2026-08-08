@@ -1,7 +1,7 @@
 # Skill registry — what to install where
 
 The central answer to "which skills does *this* repo need?" A repo's **intent** decides its
-profile; the profile decides its skills. Nothing is installed globally because it might be handy
+pack; the pack decides its skills. Nothing is installed globally because it might be handy
 somewhere.
 
 > **Why this file exists:** a skill installed globally is loaded into every session in every repo,
@@ -13,19 +13,19 @@ somewhere.
 ## The rule
 
 **A skill is global only if it is useful regardless of what the repo contains.** In practice that's
-discovery and nothing else — anything domain-shaped belongs to a profile.
+discovery and nothing else — anything domain-shaped belongs to a pack.
 
 | Scope | Install where | For |
 |---|---|---|
 | **Global** | `~/.claude/skills/` | Useful in every repo, whatever it holds |
-| **Profile** | `<repo>/.claude/skills/`, committed | Everything domain-shaped |
+| **Pack** | `<repo>/.claude/skills/`, committed | Everything domain-shaped |
 | **Never** | — | Installed "just in case" |
 
 ### The trap that makes this mandatory
 
 **Personal overrides project.** A skill in `~/.claude/skills/` silently wins over one of the same
 name in a repo's `.claude/skills/`. So per-repo versions do not take effect until the global copy
-is removed. Pruning globals isn't tidying — it's what makes profiles work at all.
+is removed. Pruning globals isn't tidying — it's what makes packs work at all.
 
 ### Why committed, not symlinked
 
@@ -45,7 +45,7 @@ That's the whole list. Everything below is per-repo.
 
 ---
 
-## Profiles
+## Packs
 
 Pick the one matching what the repo *is*. A repo may take more than one.
 
@@ -97,7 +97,7 @@ to have a pricing page, take `page-cro` and `copywriting` alone.
 **None.** Nothing in the current 50 targets Go. Worth stating plainly: the repo where most of the
 work happens needs none of the skills that were installed globally for its benefit.
 
-### On demand, no profile
+### On demand, no pack
 
 `excalidraw-diagram-generator` — install in whichever repo is producing diagrams that week.
 
@@ -129,15 +129,14 @@ Then record it under **Skills** in that repo's `CLAUDE.md`, with one line on why
 Presence declares *what*; CLAUDE.md declares *why*, and names what's deliberately absent so nobody
 re-adds it.
 
-**Packs.** [skills.sh/packs](https://www.skills.sh/packs) bundles skills into one install command —
-the same grouping instinct as the profiles below. Worth defining one pack per profile so step 1
-becomes a single command instead of ten.
+**On the word "pack".** [skills.sh](https://www.skills.sh/packs) uses it for a bundle installed by
+one command, and it's the right word for the grouping — so this file borrows the term. It does not
+use the feature. Their packs address *fetching*; nothing documented suggests one installs anywhere
+other than globally, which leaves the problem this registry exists for untouched. A hosted bundle
+also can't record why a skill is blessed for a repo, or what was deliberately left out, and that's
+the part doing the actual work here.
 
-It replaces the *fetching*, not the *scoping*: nothing documented suggests a pack installs
-anywhere other than globally, so steps 2 and 3 stand. (Unverified — the packs page needs sign-in
-and the CLI docs don't mention them. Confirm before depending on it.) A pack also can't record
-*why* a skill is blessed for a repo or what was deliberately left out, which is the part of this
-file that does the actual work.
+Same vocabulary, so a shared bundle can be adopted later without renaming anything.
 
 **Updating:** re-run `npx skills add`, then re-copy into each repo that vendors it. That fan-out is
 the real cost of this approach — see ADR-0002. If skills.sh gains a project-scope flag, steps 2
@@ -151,7 +150,7 @@ and 3 collapse and this file should change.
 ## Maintenance
 
 This file is the decision record for scoping; **ADR-0002** records why. When a new skill arrives,
-it gets a profile here before it gets installed anywhere. A skill with no profile is a skill
+it gets a pack here before it gets installed anywhere. A skill with no pack is a skill
 nobody has justified yet.
 
 Check what a repo actually invoked with `/retro` — a vendored skill with zero invocations over a

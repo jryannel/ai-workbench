@@ -36,7 +36,7 @@ Skills are installed **per repo, into a committed `.claude/skills/`**, chosen by
 rather than by convenience. Global install is reserved for skills useful regardless of repo
 content, which in practice is discovery alone.
 
-`skills.md` in this repo is the registry: repo intent → profile → skills, with the reason each is
+`skills.md` in this repo is the registry: repo intent → pack → skills, with the reason each is
 blessed. It is the central place to consult before installing anything.
 
 What decided it: the primary reader of a repo is increasingly an agent that has only the repo.
@@ -47,7 +47,7 @@ Tooling that lives in one machine's home directory is invisible to it.
 **Buys.**
 - A repo declares its own toolset, so a clone, a cloud agent or CI gets the same one.
 - Context is spent on skills that can actually fire.
-- A skill with no profile is visibly unjustified, which is a decision prompt rather than a default.
+- A skill with no pack is visibly unjustified, which is a decision prompt rather than a default.
 
 **Costs.**
 - **Duplication.** A skill used by four repos exists four times, and updating means re-copying to
@@ -59,11 +59,11 @@ Tooling that lives in one machine's home directory is invisible to it.
 
 ## What would change our mind
 
-- skills.sh gaining a project-scope install flag, or packs turning out to install per project —
-  either collapses the manual vendoring and makes most of this cheap.
+- skills.sh gaining a project-scope install flag, or its hosted packs turning out to install per
+  project — either collapses the manual vendoring and makes most of this cheap.
 - Discovering a vendored skill is materially out of date in a way that mattered. That's the
   duplication cost arriving, and it means the registry needs version tracking rather than prose.
-- The registry going stale: a new skill installed without being given a profile first means the
+- The registry going stale: a new skill installed without being given a pack first means the
   central place is not actually central, and the rule is not being followed.
 
 ## Cost of change
@@ -78,11 +78,13 @@ time and more expensive to keep postponing.
 
 ## Open questions I had to answer myself
 
-- Whether `skill-creator` belongs global or in the `meta` profile. Assumed profile, on the rule
+- Whether `skill-creator` belongs global or in the `meta` pack. Assumed pack, on the rule
   that authoring skills is an activity of some repos rather than all. Debatable; it's the single
   most likely candidate for a second global entry.
-- Whether packs install per project. Unverified — the packs page requires sign-in and the CLI docs
-  don't mention them. The registry assumes global and says so.
+- Whether skills.sh's hosted packs install per project. Unverified — the page requires sign-in and
+  the CLI docs don't mention them. The registry assumes global and says so. Note this repo borrows
+  the *word* "pack" from them for its own groupings while using none of the feature, so the two
+  senses will need keeping apart in conversation.
 - The eleven Cloudflare skills are absent from `~/.agents/.skill-lock.json`, so their provenance is
   unrecorded and their install can't be reproduced. Assumed they came from somewhere reinstallable.
 - Whether four repos × one skill is really the duplication scale. Guessed from the project
