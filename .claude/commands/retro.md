@@ -1,11 +1,13 @@
 ---
 description: Mine the last week of session transcripts and repo artifacts for what to automate, fix, or delete
 argument-hint: "[days, default 7] [--all-projects]"
+arguments: days scope
+disable-model-invocation: true
 allowed-tools: Read, Glob, Grep, Bash(find:*), Bash(jq:*), Bash(grep:*), Bash(sort:*), Bash(uniq:*), Bash(awk:*), Bash(wc:*), Bash(tr:*), Bash(sed:*), Bash(ls:*), Bash(git log:*)
 ---
 
-Produce a friction report for the last $ARGUMENTS days (default 7) and recommend at most three
-changes.
+Produce a friction report for the last `$days` days (default 7, when empty) and recommend at most
+three changes. If `$scope` is `--all-projects`, widen beyond this repo and its worktrees.
 
 This replaces the manual friction log. The data already exists — it does not depend on anyone
 remembering to write a line while annoyed mid-task.
@@ -17,7 +19,7 @@ working directory with `/` replaced by `-`. Worktrees get their own sibling dire
 on the repo slug as a **prefix** or you will miss most of the traffic.
 
 ```bash
-DAYS=${1:-7}
+DAYS=${DAYS:-7}   # from $days, defaulting to 7
 SLUG=$(pwd | tr '/' '-')
 BASE=~/.claude/projects
 # this repo and its worktrees; use $BASE for --all-projects
