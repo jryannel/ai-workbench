@@ -77,6 +77,7 @@ architectural, write down why.
 | # | Title |
 |---|---|
 | [0001](0001-adrs-are-living-documents.md) | An ADR is a living document, and every record names its cost of change |
+| [0002](0002-skills-are-scoped-by-repo-intent.md) | A skill is installed per repo, chosen by what the repo is |
 
 Status and Confidence are deliberately **not** duplicated here. A hand-maintained table of them
 drifts from the files it describes, and the drift is silent — the record is the single source of

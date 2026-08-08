@@ -82,6 +82,24 @@ that's a cue to reopen it rather than work around it quietly. Link the ADR.
 - **Ask before scope expansion.** Doing more than asked is a cost, not a bonus.
 - **Hard gates:** do not proceed past requirements or architecture without explicit human approval.
 
+## Skills
+
+This repo's profile: `<meta | go-service | cloudflare-worker | web-ui | marketing-site>`
+(see the registry in ai-workbench `skills.md`).
+
+Blessed — vendored in `.claude/skills/`, one line each on why:
+
+| Skill | Why it's here |
+|---|---|
+| `<name>` | `<the job it does in this repo>` |
+
+Deliberately absent — so nobody re-adds them:
+
+- `<name>` — `<why this repo doesn't need it>`
+
+Skills are installed per repo, not globally. A global copy of the same name silently overrides the
+one here, so if a vendored skill isn't behaving, check `~/.claude/skills/` first.
+
 ## Commands available
 
 | Command | What it does |

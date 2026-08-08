@@ -390,11 +390,13 @@ That is the whole boat test, operationalised.
 ├── CLAUDE.md                          ← conventions for working on this repo
 ├── friction-log.md                    ← manual discovery template (see /retro first)
 ├── CLAUDE.md.example                  ← project memory starting point
+├── skills.md                          ← registry: which repo gets which skills
 ├── docs/
 │   └── adr/
 │       ├── README.md                  ← when to write one, status vocabulary, index
 │       ├── 0000-template.md           ← ADR template
-│       └── 0001-…-living-documents.md ← why this template departs from Nygard
+│       ├── 0001-…-living-documents.md ← why this template departs from Nygard
+│       └── 0002-…-repo-intent.md      ← why skills are scoped per repo
 └── .claude/
     ├── settings.json                  ← wires the hook up
     ├── commands/
