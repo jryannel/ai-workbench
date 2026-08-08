@@ -94,8 +94,20 @@ Pick the one matching what the repo *is*. A repo may take more than one.
 | Skill | Source |
 |---|---|
 | `skill-creator` | `anthropics/skills` — authoring, evals, description optimisation (Apache-2.0; keep its LICENSE when vendoring) |
+| `automation-design` | this repo — command / skill / hook / agent, and where each lives |
+| `adr-writing` | this repo — only where decisions are recorded as ADRs |
+
+The two authored here are not fetchable with `npx skills add`; copy them from `ai-workbench`.
+They divide cleanly: `skill-creator` is *how to write it*, `automation-design` is *what shape it
+should be*. If they drift back into overlap, narrow `automation-design` — the vendored one is
+upstream and wins.
 
 Also relevant as a marketplace plugin: `plugin-dev@claude-plugins-official`.
+
+> **Check for a plugin before vendoring.** `skill-creator` also ships in the `anthropic-skills`
+> marketplace plugin, so a repo with that plugin enabled carries the skill twice — once namespaced,
+> once vendored — paying context for both. Vendoring buys a pinned copy that travels to CI and
+> cloud agents; the plugin buys upstream updates for free. Pick one per repo, deliberately.
 
 ### `cloudflare-worker` — Workers, Pages, D1/KV/R2
 
