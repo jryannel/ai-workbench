@@ -112,6 +112,13 @@ frequency and apply the promotion rule. The top three entries are your entire ro
 
 See [`friction-log.md`](friction-log.md) for the template.
 
+**Better: don't rely on remembering.** The log's weak point is that it asks you to stop and write
+a line at the exact moment you're mid-task and irritated — which is why most attempts lapse within
+days. Claude Code already writes a transcript of every session to `~/.claude/projects/`, and the
+same signals are recoverable from it after the fact. `/retro` does that pass and applies the
+promotion rule to the result, so discovery costs no discipline at all. Keep the manual log for
+friction that never reaches a prompt — a tool that's awkward, a doc you couldn't find.
+
 **Expected result, honestly stated:** most people's top entries are context re-supply, not
 orchestration. That's why the first build step below is a file, not a subagent.
 
@@ -345,7 +352,7 @@ That is the whole boat test, operationalised.
 .
 ├── README.md                          ← this playbook
 ├── CLAUDE.md                          ← conventions for working on this repo
-├── friction-log.md                    ← two-week discovery template
+├── friction-log.md                    ← manual discovery template (see /retro first)
 ├── CLAUDE.md.example                  ← project memory starting point
 ├── docs/
 │   └── adr/
@@ -355,7 +362,8 @@ That is the whole boat test, operationalised.
 └── .claude/
     ├── commands/
     │   ├── adr.md                     ← /adr — create a numbered ADR
-    │   └── issues-from-adr.md         ← /issues-from-adr — fan a decision into work
+    │   ├── issues-from-adr.md         ← /issues-from-adr — fan a decision into work
+    │   └── retro.md                   ← /retro — mine transcripts for what to build or delete
     ├── skills/
     │   └── adr-writing/SKILL.md       ← what a good ADR looks like
     └── agents/
