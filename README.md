@@ -343,6 +343,7 @@ That is the whole boat test, operationalised.
 ```
 .
 ├── README.md                          ← this playbook
+├── CLAUDE.md                          ← conventions for working on this repo
 ├── friction-log.md                    ← two-week discovery template
 ├── CLAUDE.md.example                  ← project memory starting point
 ├── docs/adr/0000-template.md          ← ADR template
@@ -358,7 +359,8 @@ That is the whole boat test, operationalised.
 
 **How to use it:** copy the pieces you want into your own project. The samples are deliberately
 opinionated so they're worth editing — the point is that they encode *your* conventions, and a
-generic version of them would be worth nothing.
+generic version of them would be worth nothing. (`CLAUDE.md` is the exception: it's this repo's
+own memory, for agents editing the playbook. The one to copy is `CLAUDE.md.example`.)
 
 **Suggested first session:** write `CLAUDE.md`, copy the ADR command + skill, start the friction
 log. Come back in two weeks with data and let the log tell you the second step.
