@@ -234,6 +234,19 @@ For the check you currently forget. Tests before a handoff; ADR link present bef
 closes; lint before commit. Hooks are the cheapest reliability win available, because they turn
 "the agent usually does X" into "X always happens."
 
+The distinction is worth stating plainly, because a lot of published prompt-craft gets it wrong:
+**a rule written into a skill is a request, and the same rule written as a hook is a gate.** No
+amount of "you MUST always verify before claiming done" survives a long turn where something else
+is also urgent. A `PreToolUse` hook on `git commit` either opens or doesn't. If you catch yourself
+reaching for absolutes and capital letters to make an instruction stick, that's the signal you
+wanted a hook.
+
+Sample: [`.claude/hooks/verify-before-commit.sh`](.claude/hooks/verify-before-commit.sh) refuses a
+commit while the project's fast gate is red, wired up in
+[`.claude/settings.json`](.claude/settings.json). It runs preflight rather than the full suite —
+CI is the real gate — and ships with two escape hatches, because a gate you can't bypass gets
+switched off entirely.
+
 ### Step 5 — A graph, maybe
 
 Only if [section 7](#7-where-a-graph-actually-earns-its-keep) describes your actual situation.
@@ -383,12 +396,16 @@ That is the whole boat test, operationalised.
 │       ├── 0000-template.md           ← ADR template
 │       └── 0001-…-living-documents.md ← why this template departs from Nygard
 └── .claude/
+    ├── settings.json                  ← wires the hook up
     ├── commands/
     │   ├── adr.md                     ← /adr — create a numbered ADR
     │   ├── issues-from-adr.md         ← /issues-from-adr — fan a decision into work
     │   └── retro.md                   ← /retro — mine transcripts for what to build or delete
     ├── skills/
-    │   └── adr-writing/SKILL.md       ← what a good ADR looks like
+    │   ├── adr-writing/SKILL.md       ← what a good ADR looks like
+    │   └── skill-writing/SKILL.md     ← how to write the things in this directory
+    ├── hooks/
+    │   └── verify-before-commit.sh    ← no commit while the gate is red
     └── agents/
         └── skeptic.md                 ← read-only reviewer subagent
 ```

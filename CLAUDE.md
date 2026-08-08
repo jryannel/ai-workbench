@@ -34,8 +34,10 @@ this file, it is not synced with this file, and the two should be allowed to div
 README.md              the playbook          friction-log.md      discovery template
 CLAUDE.md              this file             CLAUDE.md.example    for consumer projects
 docs/adr/              decisions about this repo (0000-template.md is the template, not an ADR)
-.claude/commands/      /adr, /issues-from-adr
-.claude/skills/        adr-writing
+.claude/commands/      /adr, /issues-from-adr, /retro
+.claude/skills/        adr-writing, skill-writing
+.claude/hooks/         verify-before-commit.sh (inert here — no test gate to run)
+.claude/settings.json  wires the hook up; live in this repo, and a sample for consumers
 .claude/agents/        skeptic (read-only reviewer)
 ```
 
