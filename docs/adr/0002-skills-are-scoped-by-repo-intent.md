@@ -1,10 +1,10 @@
-# ADR-0002: A skill is installed per repo, chosen by what the repo is
+# ADR-0002: Automation is installed per repo, chosen by what the repo is
 
 - **Status:** Working
 - **Confidence:** Low
 - **Replaces:** —
 - **Decided:** 2026-08-08
-- **Last reviewed:** 2026-08-08
+- **Last reviewed:** 2026-08-08 (revised same day — see Revisions)
 - **Issue:** — (no tracker on this repo yet)
 
 ## Context
@@ -32,12 +32,19 @@ same arithmetic — the cost is silent and recurring, so it never announces the 
 
 ## Decision
 
-Skills are installed **per repo, into a committed `.claude/skills/`**, chosen by the repo's intent
-rather than by convenience. Global install is reserved for skills useful regardless of repo
-content, which in practice is discovery alone.
+Skills, commands and agents are installed **per repo, into a committed `.claude/`**, chosen by the
+repo's intent rather than by convenience. Global install is reserved for what is useful regardless
+of repo content.
 
-`skills.md` in this repo is the registry: repo intent → pack → skills, with the reason each is
-blessed. It is the central place to consult before installing anything.
+The rule cuts differently by artifact type, which is correct rather than inconsistent: skills are
+usually domain-shaped and belong to a pack; commands are usually *workflow* — git, session
+continuity — and pass the global test honestly; agents are nearly always repo-shaped, because a
+reviewer's brief depends on what it reviews.
+
+`packs.md` in this repo is the registry: repo intent → pack → skills, commands and agents, with the
+reason each is blessed. It is the central place to consult before installing anything, and it
+carries a companion rule on invocation — anything that writes or reaches outward is manual-only —
+which is a separate decision about *what may fire*, not about where things live.
 
 What decided it: the primary reader of a repo is increasingly an agent that has only the repo.
 Tooling that lives in one machine's home directory is invisible to it.
@@ -93,3 +100,8 @@ time and more expensive to keep postponing.
 ## Revisions
 
 - 2026-08-08 — Written.
+- 2026-08-08 — Widened from skills to commands and agents. The scoping question turned out to be
+  the same one for all three, so this is an edit rather than a new record — the problem didn't
+  change, the understanding did. Auditing the nine global commands is what surfaced it: they pass
+  the global test where skills mostly don't, which sharpened the rule from "install locally" to
+  "scope follows what the artifact depends on". Registry renamed `skills.md` → `packs.md` to match.

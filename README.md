@@ -390,7 +390,7 @@ That is the whole boat test, operationalised.
 ├── CLAUDE.md                          ← conventions for working on this repo
 ├── friction-log.md                    ← manual discovery template (see /retro first)
 ├── CLAUDE.md.example                  ← project memory starting point
-├── skills.md                          ← registry: which repo gets which skills
+├── packs.md                           ← registry: which repo gets which automation
 ├── docs/
 │   └── adr/
 │       ├── README.md                  ← when to write one, status vocabulary, index

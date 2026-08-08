@@ -33,6 +33,7 @@ this file, it is not synced with this file, and the two should be allowed to div
 ```
 README.md              the playbook          friction-log.md      discovery template
 CLAUDE.md              this file             CLAUDE.md.example    for consumer projects
+packs.md               which repo gets which skills, commands and agents (ADR-0002)
 docs/adr/              decisions about this repo (0000-template.md is the template, not an ADR)
 .claude/commands/      /adr, /issues-from-adr, /retro
 .claude/skills/        adr-writing, skill-writing
