@@ -1,6 +1,7 @@
 ---
 description: Turn an ADR that is in force into a set of proposed GitHub issues
 argument-hint: <ADR number or path, e.g. 0007>
+disable-model-invocation: true
 allowed-tools: Read, Glob, Bash(gh issue list:*), Bash(gh issue view:*), Bash(gh label list:*)
 ---
 

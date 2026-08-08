@@ -50,12 +50,35 @@ of a need.
 Four rungs. The useful way to read them is not "increasing sophistication" but
 **"what has become stable enough to encode."**
 
-| Rung | Encode when… | What it is | Lives in |
+| Rung | Encode when… | What it is | What triggers it |
 |---|---|---|---|
-| **Command** | The *invocation* is stable | A prompt you invoke by name, with arguments | `.claude/commands/*.md` |
-| **Skill** | The *format / procedure* is stable | Instructions Claude loads when the task matches | `.claude/skills/<name>/SKILL.md` |
-| **Loop** | The *verifier* is stable | Agent iterates until a check passes | Skill + hook + a real test |
-| **Graph** | The *routing* is stable | Several specialised nodes, edges, shared state | Subagents + orchestrator |
+| **Command** | The *invocation* is stable | A prompt you call by name, with arguments | You, deliberately |
+| **Skill** | The *format / procedure* is stable | The same prompt, loaded when the task matches | Claude, off the description |
+| **Loop** | The *verifier* is stable | Iterates until a check passes | A verifier, until it goes green |
+| **Graph** | The *routing* is stable | Several specialised nodes, edges, shared state | An orchestrator |
+
+### Rungs 1 and 2 are one mechanism
+
+Worth knowing before you agonise over which to write: **commands and skills are the same thing.**
+`.claude/commands/deploy.md` and `.claude/skills/deploy/SKILL.md` both produce `/deploy` and behave
+identically. The skill directory adds a home for supporting files; that's the only structural
+difference.
+
+What actually separates the rungs is **who pulls the trigger**, and it's one line of frontmatter:
+
+- `disable-model-invocation: true` — only you can invoke it. Right for anything expensive,
+  destructive, or outward-facing.
+- omitted — Claude may invoke it whenever the `description` matches, which makes the description
+  the load-bearing part.
+- `user-invocable: false` — hidden from the `/` menu; background knowledge you never call directly.
+
+Two consequences. **Promoting from command to skill costs one line**, not a rewrite — so there's no
+reason to hesitate at that step. And **a skill's description is a trigger, not documentation**: a
+vague one either never fires or fires constantly, and both failures look like the prompt being bad.
+
+If a name collides, the more specific definition wins: personal overrides project, either overrides
+a bundled skill, and a skill beats a command of the same name. Built-in command names such as
+`/clear` are reserved and can't be taken over.
 
 **Always pick the lowest rung that matches.** A surprising amount of what looks like graph work
 is skill work — an SOP written down once, rather than an orchestration layer. Writing the procedure
