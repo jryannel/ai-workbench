@@ -50,9 +50,13 @@ plugins/workflow/               user-scope plugin — worktree git flow, handoff
 dogfoods itself: `.claude/settings.json` declares the marketplace as `.` and enables
 `workbench@ai-workbench`. Two consequences:
 
-- **Editing a file under `plugins/workbench/` changes the published plugin.** It is picked up from
-  the working tree, so a local edit is live in the next session — but it's also what a consumer
+- **Editing a file under `plugins/` changes the published plugin.** It is picked up from the
+  working tree, so a local edit is live in the next session — but it's also what a consumer
   installs. Treat it as an edit to the README.
+- **`plugins/workflow/` is live in *every* session on this machine, not just this repo.** It's
+  installed at user scope from the same directory marketplace, so a half-finished edit to
+  `git-ship.md` is what `/git-ship` runs everywhere until it's fixed. Edit it in a worktree, or
+  finish the edit before starting other work.
 - **`.claude/settings.json` must keep the relative `"path": "."`.** `claude plugin marketplace add`
   rewrites it to an absolute `/Users/…` path, which would break every other machine. If you re-run
   that command, fix the path before committing.
