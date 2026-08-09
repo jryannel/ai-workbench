@@ -1,5 +1,5 @@
 ---
-description: Create a quick checkpoint of current work with all changes
+description: 'Create a quick checkpoint of current work with all changes. Differentiator: a local work-in-progress commit that stays where it is; /git-ship is what lands work on main.'
 argument-hint: [message]
 allowed-tools: [Bash]
 disable-model-invocation: true

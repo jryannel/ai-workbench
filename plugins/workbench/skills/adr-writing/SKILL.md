@@ -1,6 +1,6 @@
 ---
 name: adr-writing
-description: Write, review, revise, and replace Architecture Decision Records (ADRs) in docs/adr/. Use this skill whenever a decision needs recording, when the user mentions ADRs, decision records, "why did we choose X", or when a conversation has reached a technical or architectural decision worth capturing — even if the user doesn't say "ADR". Also use when reviewing an existing ADR for quality, when new evidence challenges a recorded decision, or when a decision needs revisiting.
+description: 'Write, review, revise, and replace Architecture Decision Records (ADRs) in docs/adr/. Use this skill whenever a decision needs recording, when the user mentions ADRs, decision records, "why did we choose X", or when a conversation has reached a technical or architectural decision worth capturing — even if the user doesn''t say "ADR". Also use when reviewing an existing ADR for quality, when new evidence challenges a recorded decision, or when a decision needs revisiting. Differentiator: this is the standard a record is judged against; the /adr command creates or revises the file itself.'
 ---
 
 # Writing ADRs

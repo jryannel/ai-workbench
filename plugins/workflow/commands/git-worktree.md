@@ -1,5 +1,5 @@
 ---
-description: Create a fresh worktree from the latest main (replaces feature branches)
+description: 'Create a fresh worktree from the latest main (replaces feature branches). Differentiator: worktree flow, not feature branches — /git-start from the devproc git plugin is the alternative, and the two should not both be enabled.'
 argument-hint: "<name>"
 allowed-tools: [Bash]
 ---

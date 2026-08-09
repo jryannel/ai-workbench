@@ -1,6 +1,6 @@
 ---
 name: automation-design
-description: Decide what shape a piece of automation should take — command, skill, hook, or agent — and where it should live. Use when an instruction keeps getting ignored or restated, when deciding whether something belongs in CLAUDE.md or its own file, when a repeated procedure looks ready to encode, or when a skill fires at the wrong times. For authoring and evaluating a skill once the shape is settled, use skill-creator instead.
+description: 'Decide what shape a piece of automation should take — command, skill, hook, or agent — and where it should live. Use when an instruction keeps getting ignored or restated, when deciding whether something belongs in CLAUDE.md or its own file, when a repeated procedure looks ready to encode, or when a skill fires at the wrong times. Differentiator: this answers what shape to build and where it lives; skill-creator authors and evaluates the skill once the shape is settled.'
 ---
 
 # Choosing the shape
@@ -49,6 +49,32 @@ Anything written as though it were alone in context degrades everything else:
   answer.
 
 Emphasis is a budget. Spend it on the one or two things that actually break.
+
+## Name what it isn't
+
+The description is the only part loaded before the model decides whether to open the artifact, so
+two things describing overlapping territory compete on every turn with nothing to resolve them.
+This repo shipped that failure: a `skill-writing` skill sitting next to `skill-creator`, both
+plausibly matching "create a skill". Renaming fixed it; a differentiator would have prevented it.
+
+End the description with an explicit contrast against the nearest neighbour:
+
+```
+Differentiator: this answers what shape to build; skill-creator authors it once the shape is settled.
+```
+
+Add one only where something else could plausibly claim the same request. A differentiator against
+an artifact nobody would confuse it with is noise, and emphasis is a budget.
+
+Two mechanical rules come with it:
+
+- **Quote the value.** A mid-sentence `: ` makes the description invalid YAML under a strict
+  parser, which reads it as a nested mapping. Claude Code is lenient and accepts it; a stricter
+  runtime rejects the file and the artifact silently never loads. Single-quote the whole value and
+  double any inner apostrophe — `doesn''t`.
+- **Say *what* and *when*, never *how*.** A description that summarises the steps invites the model
+  to follow the summary instead of opening the body. It answers "should I open this now?", not
+  "what are the steps?"
 
 ## Then decide scope and trigger
 
