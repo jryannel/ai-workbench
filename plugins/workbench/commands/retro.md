@@ -47,13 +47,21 @@ find <dirs> -name '*.jsonl' -mtime -$DAYS -exec jq -r '
   | select(.!=null and .!="") | gsub("\n";"  ")' {} + 2>/dev/null > /tmp/retro-raw.txt
 
 grep -v -i -e 'command-message' -e 'command-name' -e 'local-command' \
-          -e 'image original' -e 'request interrupted' -e 'caveat:' /tmp/retro-raw.txt \
+          -e 'image original' -e 'request interrupted' -e 'caveat:' \
+          -e 'is already loaded above' -e 'base directory for this skill' /tmp/retro-raw.txt \
   | awk 'length($0)<=500 && length($0)>0' > /tmp/retro-clean.txt
 ```
 
 **Both filters are load-bearing.** Skill and command bodies are injected as user messages and run
 to thousands of characters; leaving them in inflates every keyword count by 3–10×. Verify by
 checking that the cleaned count is meaningfully lower than the raw count, and report both.
+
+**The runtime also speaks in user records.** `Skill /x is already loaded above; instructions
+unchanged.` and `Base directory for this skill: …` are notices, not things anyone typed, and both
+land in the same stream as your prompts. The first slipped through until a run counted it as a
+prompt; the second was caught only by the 500-character cap, which is luck rather than design — a
+short skill body would have sailed past it. **When a new runtime notice appears, add it here rather
+than trusting the length cap to catch it.**
 
 ## Step 2 — Count the signals
 
