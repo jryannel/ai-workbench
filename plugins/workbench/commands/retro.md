@@ -67,8 +67,10 @@ tr 'A-Z' 'a-z' < /tmp/retro-clean.txt | sed 's/[[:punct:]]//g; s/  */ /g; s/^ //
 Group these into **families** by intent, not by exact string — "push it", "ship it", "open the
 pr" and "merge it" are one workflow, and the family count is what the promotion rule needs.
 
-**Commands actually invoked** — these live in markers, not in prose, so they need their own pass.
-It has to run through the **same user-record filter as Step 1**, for the same reason:
+**Invocations — two sources, and neither alone is the answer.**
+
+*Typed slash commands* leave a `<command-name>` marker. It must run through the **same user-record
+filter as Step 1**, or it counts its own output:
 
 ```bash
 find <dirs> -name '*.jsonl' -mtime -$DAYS -exec jq -r '
@@ -77,15 +79,38 @@ find <dirs> -name '*.jsonl' -mtime -$DAYS -exec jq -r '
      else ([.message.content[]?|select(.type=="text")|.text]|join(" ")) end)
   | select(.!=null) | select(test("<command-name>"))
   | capture("<command-name>(?<c>[^<]*)</command-name>").c' {} + 2>/dev/null \
-  | sort | uniq -c | sort -rn
+  | sed 's|^/||' | sort | uniq -c | sort -rn
 ```
 
-**Never grep the raw `.jsonl` for this.** The marker appears in assistant tool calls, in tool
-results, and in any transcript where the retro's own output was echoed back — including this
-command's. Grepping raw counts all of them as invocations. Measured against 30 days of real
-sessions, the naive grep overstated `/handoff` by 4 and `/resume` by 6, and invented a command
-called `(.*?)` out of a regex printed in an earlier report. **A count you cannot distinguish from
-your own output is not a measurement.**
+*Skills actually loaded* leave a `Skill` tool-use record, whether you typed them or the model
+reached for them:
+
+```bash
+find <dirs> -name '*.jsonl' -mtime -$DAYS -exec jq -r '
+  select(.type=="assistant") | .message.content[]?
+  | select(.type=="tool_use" and .name=="Skill") | .input.skill' {} + 2>/dev/null \
+  | sed 's|^.*:||' | sort | uniq -c | sort -rn
+```
+
+**Report both, and treat anything non-zero in either as used.** They disagree, and each is blind
+where the other sees — measured over 30 days of real sessions:
+
+| | Typed marker | Skill load | Why |
+|---|---|---|---|
+| `git-worktree` | 0 | 7 | model-invoked; the marker pass calls it dead |
+| `handoff` | 35 | 11 | manual-only; legacy typed invocations leave no Skill record |
+| `/clear`, `/model` | 16+ | 0 | built-in CLI, never yours to delete |
+
+Taking the higher of the two is the safe reading **for this command specifically**, because the
+decision it feeds is deletion: over-counting keeps something you didn't need, under-counting
+deletes something you use.
+
+**Never grep the raw `.jsonl` for either.** The marker appears in assistant tool calls, in tool
+results, and in any transcript where a previous retro's output was echoed back. On this repo the
+naive grep reported 24 invocations, then 48 on the next run — every one an echo of the report
+before it, including a command called `(.*?)` lifted from a printed regex. The Skill-load pass is
+immune by construction: it reads structured `tool_use` fields on assistant records, not free text.
+**A count you cannot distinguish from your own output is not a measurement.**
 
 **Interruptions** — how often work was stopped mid-flight:
 
@@ -129,7 +154,7 @@ Apply the promotion rule from the README only to families with no existing comma
 | Step that must always happen, forgotten | 2× | Hook |
 
 Then look for what to **delete**: any command, skill or agent the repo ships — in `.claude/`, or in
-a plugin under `plugins/` — with zero invocations in the window is a candidate. Deleting is a
+a plugin under `plugins/` — with zero invocations **in both passes** is a candidate. Deleting is a
 success condition, not a failure.
 
 **Except when the automation is younger than the window.** Something written three days into a
