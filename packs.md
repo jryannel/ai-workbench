@@ -168,8 +168,28 @@ to have a pricing page, take `page-cro` and `copywriting` alone.
 ### `go-service` — Go libraries and services
 *sqlb, valiro-go.*
 
-**None.** Nothing in the current 50 targets Go. Worth stating plainly: the repo where most of the
-work happens needs none of the skills that were installed globally for its benefit.
+**No third-party skills.** Nothing in the current 50 targets Go. Worth stating plainly: the repo
+where most of the work happens needs none of the skills that were installed globally for its
+benefit.
+
+What it has instead is **vendored, and deliberately not a plugin yet**:
+
+| Repo | Vendored | Why not global |
+|---|---|---|
+| sqlb | `/adr` | A fork of `workbench`'s, not a copy — it cites ADR-0016, enforces *prefer a failing check to a written-down rule*, and runs `mise run site-check` because `docs/adr` publishes |
+| sqlb | `/release` + `verify-release-gate.sh` | Names the workflows `ci` and `pages`, the `mise` tasks, and `docs/releases.md`. None of that survives leaving the repo |
+
+The gate is the interesting one, because it is the promotion rule firing rather than a preference.
+`CLAUDE.md` already said in bold that a release needs **both** workflows green, and gave the reason
+`gh pr checks` cannot see it — `pages` runs only on pushes to `main`, so a pull request shows one of
+the two. It did not hold twice. Two is the hook threshold, and a `PreToolUse` gate on `git tag` /
+`gh release create` either opens or does not.
+
+**A pack, not a plugin, until a second repo needs it.** One consumer is not a distribution problem,
+and `packaging` it now would be the anticipatory abstraction this file argues against everywhere
+else. The trigger to promote is valiro-go wanting the same gate — at which point the generic half
+(are the repo's workflows green on the commit being tagged?) is worth extracting and the
+sqlb-specific half is not.
 
 ### On demand, no pack
 
